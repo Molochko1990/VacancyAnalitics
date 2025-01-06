@@ -1,0 +1,11 @@
+<!-- app/templates/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h2>Разработчик игр (GameDev)</h2>
+<p>Описание профессии: ... (текст не менее 2000 знаков)</p>
+<img src="{% static 'images/gamedev.jpg' %}" alt="Game Development">
+{% endblock %}

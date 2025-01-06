@@ -1,0 +1,28 @@
+<!-- app/templates/base.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Web-приложение анализа профессий{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Web-приложение анализа профессий</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index' %}">Главная</a></li>
+
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>ФИО: Патракеева Мария Андреевна</p>
+        <p>Группа: 1</p>
+    </footer>
+</body>
+</html>
