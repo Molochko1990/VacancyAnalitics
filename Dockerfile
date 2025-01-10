@@ -8,8 +8,10 @@ RUN pip install --no-cache-dir poetry
 
 COPY pyproject.toml poetry.lock /app/
 
-RUN poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
 COPY . /app
 
 EXPOSE 8000
+
+CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

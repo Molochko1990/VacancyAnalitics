@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import sql
 
 admin_user = 'postgres'
-admin_password = 'Alex2001'
+admin_password = 'masha123'
 host = 'localhost'
 port = '5432'
 
