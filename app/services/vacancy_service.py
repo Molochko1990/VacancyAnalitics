@@ -1,10 +1,7 @@
 # services/vacancy_service.py
-from datetime import datetime
-from django.db.models import Avg, Count, F, Value, FloatField
-from django.db.models.functions import Coalesce
-from django.db import models
+from django.db.models import Count, F
 from ..models import Vacancy
-from .central_bank_api import CBRApi
+from app.management.commands.update_rates import CBRApi
 from collections import defaultdict
 import logging
 
@@ -17,36 +14,47 @@ class VacancyService:
         self._currency_cache = {}
 
     def preload_currency_rates(self):
-        # Фильтруем записи с пустыми значениями прямо в запросе
         unique_combinations = Vacancy.objects.filter(
             salary_currency__isnull=False,
-            salary_currency__gt="",  # Исключаем пустые строки
+            salary_currency__gt="",
             published_at__isnull=False,
         ).values_list("salary_currency", "published_at").distinct()
 
         logger.info(f"Найдено {len(unique_combinations)} валидных комбинаций для загрузки курсов валют")
 
-        # Загружаем курсы валют для каждой комбинации
         rates = {}
+        tasks = []
+
         for currency, published_at in unique_combinations:
             if currency != "RUR":
                 month_start = published_at.replace(day=1)
-                rates[(currency, month_start)] = self.cbr.get_currency_rate(currency, month_start)
+                tasks.append(fetch_currency_rate.delay(currency, month_start))
+
+        results = [task.get() for task in tasks]
+
+        for i, (currency, published_at) in enumerate(unique_combinations):
+            if currency != "RUR" and not isinstance(results[i], Exception):
+                month_start = published_at.replace(day=1)
+                rates[(currency, month_start)] = results[i]
 
         return rates
-
 
     def get_avg_salary_by_year(self):
         """
         Рассчитать среднюю зарплату по годам.
         """
-        self.preload_currency_rates()  # Предварительно загружаем курсы валют
+        # Предзагрузка курсов валют
+        rates = self.preload_currency_rates()
         salary_data = defaultdict(list)
 
         vacancies = Vacancy.objects.all()
         for vacancy in vacancies:
             year = vacancy.published_at.year
-            rate = self.get_currency_rate(vacancy.salary_currency, vacancy.published_at)
+            rate = 1.0  # По умолчанию RUR (без конвертации)
+
+            if vacancy.salary_currency != "RUR":
+                month_start = vacancy.published_at.replace(day=1)
+                rate = rates.get((vacancy.salary_currency, month_start), 1.0)
 
             salary_values = [v for v in [vacancy.salary_from, vacancy.salary_to] if v]
             if salary_values:
@@ -78,7 +86,8 @@ class VacancyService:
         """
         Рассчитать среднюю зарплату по городам с учётом конвертации валют.
         """
-        self.preload_currency_rates()  # Предварительно загружаем курсы валют
+        # Предзагрузка курсов валют
+        rates = self.preload_currency_rates()
         city_salary_data = defaultdict(list)
 
         vacancies = Vacancy.objects.all()
@@ -86,7 +95,12 @@ class VacancyService:
             if not vacancy.area_name:
                 continue
 
-            rate = self.get_currency_rate(vacancy.salary_currency, vacancy.published_at)
+            rate = 1.0  # По умолчанию RUR (без конвертации)
+
+            if vacancy.salary_currency != "RUR":
+                month_start = vacancy.published_at.replace(day=1)
+                rate = rates.get((vacancy.salary_currency, month_start), 1.0)
+
             salary_values = [v for v in [vacancy.salary_from, vacancy.salary_to] if v]
             if salary_values:
                 avg_salary = sum(salary_values) / len(salary_values)
