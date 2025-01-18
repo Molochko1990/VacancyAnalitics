@@ -1,66 +1,37 @@
-# services/vacancy_service.py
+import os
+from decimal import Decimal, InvalidOperation
 from django.db.models import Count, F
 from ..models import Vacancy
-from app.management.commands.update_rates import CBRApi
+from django.db.models import Q
 from collections import defaultdict
-import logging
-
-logger = logging.getLogger(__name__)
+import matplotlib.pyplot as plt
+from django.conf import settings
 
 
 class VacancyService:
     def __init__(self):
-        self.cbr = CBRApi()
-        self._currency_cache = {}
-
-    def preload_currency_rates(self):
-        unique_combinations = Vacancy.objects.filter(
-            salary_currency__isnull=False,
-            salary_currency__gt="",
-            published_at__isnull=False,
-        ).values_list("salary_currency", "published_at").distinct()
-
-        logger.info(f"Найдено {len(unique_combinations)} валидных комбинаций для загрузки курсов валют")
-
-        rates = {}
-        tasks = []
-
-        for currency, published_at in unique_combinations:
-            if currency != "RUR":
-                month_start = published_at.replace(day=1)
-                tasks.append(fetch_currency_rate.delay(currency, month_start))
-
-        results = [task.get() for task in tasks]
-
-        for i, (currency, published_at) in enumerate(unique_combinations):
-            if currency != "RUR" and not isinstance(results[i], Exception):
-                month_start = published_at.replace(day=1)
-                rates[(currency, month_start)] = results[i]
-
-        return rates
+        pass
 
     def get_avg_salary_by_year(self):
         """
         Рассчитать среднюю зарплату по годам.
         """
-        # Предзагрузка курсов валют
-        rates = self.preload_currency_rates()
         salary_data = defaultdict(list)
 
-        vacancies = Vacancy.objects.all()
+        vacancies = Vacancy.objects.filter(Q(salary_from__isnull=False) | Q(salary_to__isnull=False))
         for vacancy in vacancies:
             year = vacancy.published_at.year
-            rate = 1.0  # По умолчанию RUR (без конвертации)
-
-            if vacancy.salary_currency != "RUR":
-                month_start = vacancy.published_at.replace(day=1)
-                rate = rates.get((vacancy.salary_currency, month_start), 1.0)
+            try:
+                rate = Decimal(vacancy.exchange_rate_to_rub) if vacancy.exchange_rate_to_rub else Decimal('0')
+            except InvalidOperation:
+                continue
 
             salary_values = [v for v in [vacancy.salary_from, vacancy.salary_to] if v]
             if salary_values:
-                avg_salary = sum(salary_values) / len(salary_values)
+                avg_salary = sum(Decimal(v) for v in salary_values) / len(salary_values)
                 salary_in_rub = avg_salary * rate
-                salary_data[year].append(salary_in_rub)
+                if salary_in_rub <= 1_000_000:
+                    salary_data[year].append(salary_in_rub)
 
         avg_salary_by_year = [
             {"year": year, "avg_salary": round(sum(salaries) / len(salaries), 2)}
@@ -69,6 +40,23 @@ class VacancyService:
         ]
 
         return avg_salary_by_year
+
+    def save_salary_dynamics_chart(self, salary_dynamics):
+        salary_dynamics = sorted(salary_dynamics, key=lambda x: x['year'])
+        years = [item['year'] for item in salary_dynamics]
+        salaries = [item['avg_salary'] for item in salary_dynamics]
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(years, salaries, marker='o')
+        plt.title('Динамика уровня зарплат по годам')
+        plt.xlabel('Год')
+        plt.ylabel('Средняя зарплата')
+        plt.grid(True)
+
+        chart_path = os.path.join(settings.MEDIA_ROOT, 'salary_dynamics.png')
+        plt.savefig(chart_path)
+        plt.close()
+        return chart_path
 
     def get_vacancy_count_by_year(self):
         """
@@ -82,38 +70,73 @@ class VacancyService:
 
         return list(vacancies)
 
-    def get_salary_by_city(self):
-        """
-        Рассчитать среднюю зарплату по городам с учётом конвертации валют.
-        """
-        # Предзагрузка курсов валют
-        rates = self.preload_currency_rates()
-        city_salary_data = defaultdict(list)
+    def save_vacancy_count_chart(self, vacancy_count_by_year):
+        vacancy_count_by_year = sorted(vacancy_count_by_year, key=lambda x: x['year'])
 
-        vacancies = Vacancy.objects.all()
+        years = [item['year'] for item in vacancy_count_by_year]
+        counts = [item['count'] for item in vacancy_count_by_year]
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(years, counts, marker='o', linestyle='-')
+        plt.title('Динамика количества вакансий по годам')
+        plt.xlabel('Год')
+        plt.ylabel('Количество вакансий')
+        plt.grid(True)
+
+        chart_path = os.path.join(settings.MEDIA_ROOT, 'vacancy_count.png')
+        plt.savefig(chart_path)
+        plt.close()
+        return chart_path
+
+    def get_salary_by_city(self):
+        """ Рассчитать среднюю зарплату по городам с учётом конвертации валют. """
+        city_salary_data = defaultdict(list)
+        vacancies = Vacancy.objects.filter(Q(salary_from__isnull=False) | Q(salary_to__isnull=False))
+
         for vacancy in vacancies:
-            if not vacancy.area_name:
+            try:
+                rate = Decimal(vacancy.exchange_rate_to_rub) if vacancy.exchange_rate_to_rub else Decimal('0')
+            except InvalidOperation:
                 continue
 
-            rate = 1.0  # По умолчанию RUR (без конвертации)
-
-            if vacancy.salary_currency != "RUR":
-                month_start = vacancy.published_at.replace(day=1)
-                rate = rates.get((vacancy.salary_currency, month_start), 1.0)
-
             salary_values = [v for v in [vacancy.salary_from, vacancy.salary_to] if v]
+
             if salary_values:
-                avg_salary = sum(salary_values) / len(salary_values)
+                avg_salary = sum(Decimal(v) for v in salary_values) / len(
+                    salary_values)
                 salary_in_rub = avg_salary * rate
-                city_salary_data[vacancy.area_name].append(salary_in_rub)
+                if salary_in_rub <= 1_000_000:
+                    city_salary_data[vacancy.area_name].append(salary_in_rub)
 
         avg_salary_by_city = [
-            {"area_name": city, "avg_salary": round(sum(salaries) / len(salaries), 2)}
-            for city, salaries in city_salary_data.items()
-            if salaries
+            {
+                "area_name": city,
+                "avg_salary": round(float(sum(salaries) / len(salaries)), 2)
+            }
+            for city, salaries in city_salary_data.items() if salaries
         ]
+        avg_salary_by_city.sort(key=lambda x: x['avg_salary'], reverse=True)
 
         return avg_salary_by_city
+
+    def save_salary_by_city_chart(self, salary_by_city):
+        salary_by_city = sorted(salary_by_city, key=lambda x: x['avg_salary'], reverse=True)
+        top_cities = salary_by_city[:30]
+
+        cities = [item['area_name'] for item in top_cities]
+        salaries = [item['avg_salary'] for item in top_cities]
+
+        plt.figure(figsize=(12, 8))
+        plt.barh(cities, salaries, color='skyblue')
+        plt.title('Средняя зарплата по городам')
+        plt.xlabel('Средняя зарплата')
+        plt.ylabel('Город')
+        plt.grid(axis='x', linestyle='--', linewidth=0.7)
+
+        chart_path = os.path.join(settings.MEDIA_ROOT, 'salary_by_city.png')
+        plt.savefig(chart_path, bbox_inches='tight')
+        plt.close()
+        return chart_path
 
     def get_vacancy_share_by_city(self):
         """
@@ -135,6 +158,23 @@ class VacancyService:
             }
             for vacancy in vacancies
         ]
+
+    def save_vacancy_share_by_city_chart(self, vacancy_share_by_city):
+        cities = [item['area_name'] for item in vacancy_share_by_city]
+        shares = [item['share'] for item in vacancy_share_by_city]
+
+        plt.figure(figsize=(14, 8))
+        plt.barh(cities, shares, color='lightgreen')
+        plt.title('Доля вакансий по городам')
+        plt.xlabel('Доля (%)')
+        plt.ylabel('Город')
+        plt.grid(axis='x', linestyle='--', linewidth=0.7)
+        plt.gca().invert_yaxis()
+
+        chart_path = os.path.join(settings.MEDIA_ROOT, 'vacancy_share_by_city.png')
+        plt.savefig(chart_path, bbox_inches='tight')
+        plt.close()
+        return chart_path
 
     def get_top_skills(self, year: int):
         """

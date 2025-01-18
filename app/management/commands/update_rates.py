@@ -88,7 +88,7 @@ async def update_exchange_rates():
     for i in range(0, len(tasks), 10):
         results = await asyncio.gather(*tasks[i:i + 10])
         successful_updates += sum(results)
-        await asyncio.sleep(0.1)
+        # await asyncio.sleep(0.1)
 
     logger.info(f"Total requests made: {total_requests}")
     logger.info(f"Successful currency updates: {successful_updates}")
