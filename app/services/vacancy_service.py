@@ -12,13 +12,20 @@ class VacancyService:
     def __init__(self):
         pass
 
-    def get_avg_salary_by_year(self):
+    def get_avg_salary_by_year(self, keywords=None):
         """
         Рассчитать среднюю зарплату по годам.
         """
         salary_data = defaultdict(list)
 
-        vacancies = Vacancy.objects.filter(Q(salary_from__isnull=False) | Q(salary_to__isnull=False))
+        query = Q(salary_from__isnull=False) | Q(salary_to__isnull=False)
+        if keywords:
+            keyword_query = Q()
+            for keyword in keywords:
+                keyword_query |= Q(name__icontains=keyword) | Q(key_skills__icontains=keyword)
+            query &= keyword_query
+
+        vacancies = Vacancy.objects.filter(query)
         for vacancy in vacancies:
             year = vacancy.published_at.year
             try:
@@ -30,7 +37,7 @@ class VacancyService:
             if salary_values:
                 avg_salary = sum(Decimal(v) for v in salary_values) / len(salary_values)
                 salary_in_rub = avg_salary * rate
-                if salary_in_rub <= 1_000_000:
+                if salary_in_rub <= 10_000_000:
                     salary_data[year].append(salary_in_rub)
 
         avg_salary_by_year = [
@@ -38,6 +45,8 @@ class VacancyService:
             for year, salaries in salary_data.items()
             if salaries
         ]
+
+        avg_salary_by_year.sort(key=lambda x: x["year"])
 
         return avg_salary_by_year
 
@@ -58,11 +67,16 @@ class VacancyService:
         plt.close()
         return chart_path
 
-    def get_vacancy_count_by_year(self):
+    def get_vacancy_count_by_year(self, keywords=None):
         """
         Возвращает количество вакансий по годам.
         """
-        vacancies = Vacancy.objects.annotate(
+        query = Q()
+        if keywords:
+            for keyword in keywords:
+                query |= Q(name__icontains=keyword) | Q(key_skills__icontains=keyword)
+
+        vacancies = Vacancy.objects.filter(query).annotate(
             year=F("published_at__year")
         ).values("year").annotate(
             count=Count("id")
@@ -88,10 +102,18 @@ class VacancyService:
         plt.close()
         return chart_path
 
-    def get_salary_by_city(self):
+    def get_salary_by_city(self, keywords=None):
         """ Рассчитать среднюю зарплату по городам с учётом конвертации валют. """
         city_salary_data = defaultdict(list)
-        vacancies = Vacancy.objects.filter(Q(salary_from__isnull=False) | Q(salary_to__isnull=False))
+
+        query = Q(salary_from__isnull=False) | Q(salary_to__isnull=False)
+        if keywords:
+            keyword_query = Q()
+            for keyword in keywords:
+                keyword_query |= Q(name__icontains=keyword) | Q(key_skills__icontains=keyword)
+            query &= keyword_query
+
+        vacancies = Vacancy.objects.filter(query)
 
         for vacancy in vacancies:
             try:
@@ -105,7 +127,7 @@ class VacancyService:
                 avg_salary = sum(Decimal(v) for v in salary_values) / len(
                     salary_values)
                 salary_in_rub = avg_salary * rate
-                if salary_in_rub <= 1_000_000:
+                if salary_in_rub <= 10_000_000:
                     city_salary_data[vacancy.area_name].append(salary_in_rub)
 
         avg_salary_by_city = [
@@ -117,7 +139,7 @@ class VacancyService:
         ]
         avg_salary_by_city.sort(key=lambda x: x['avg_salary'], reverse=True)
 
-        return avg_salary_by_city
+        return avg_salary_by_city[:20]
 
     def save_salary_by_city_chart(self, salary_by_city):
         salary_by_city = sorted(salary_by_city, key=lambda x: x['avg_salary'], reverse=True)
@@ -138,11 +160,16 @@ class VacancyService:
         plt.close()
         return chart_path
 
-    def get_vacancy_share_by_city(self):
+    def get_vacancy_share_by_city(self,keywords=None):
         """
         Возвращает долю вакансий по городам (в порядке убывания).
         """
-        total_vacancies = Vacancy.objects.count()
+        query = Q()
+        if keywords:
+            for keyword in keywords:
+                query |= Q(name__icontains=keyword) | Q(key_skills__icontains=keyword)
+
+        total_vacancies = Vacancy.objects.filter(query).count()
         if total_vacancies == 0:
             return []
 
@@ -176,15 +203,18 @@ class VacancyService:
         plt.close()
         return chart_path
 
-    def get_top_skills(self, year: int):
-        """
-        Возвращает ТОП-20 навыков за указанный год.
-        """
+    def get_top_skills(self, year: int, keywords=None):
+        """ Возвращает ТОП-20 навыков за указанный год для выбранной профессии. """
         from collections import Counter
 
-        skills = Vacancy.objects.filter(
-            published_at__year=year
-        ).values_list("key_skills", flat=True)
+        query = Q(published_at__year=year)
+        if keywords:
+            keyword_query = Q()
+            for keyword in keywords:
+                keyword_query |= Q(name__icontains=keyword) | Q(key_skills__icontains=keyword)
+            query &= keyword_query
+
+        skills = Vacancy.objects.filter(query).values_list("key_skills", flat=True)
 
         skill_counter = Counter()
         for skill_set in skills:

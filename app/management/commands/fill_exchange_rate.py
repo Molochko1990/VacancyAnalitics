@@ -4,10 +4,8 @@ from .get_all_currency import get_all_currency
 from app.models import Vacancy
 import logging
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 
 class Command(BaseCommand):
     help = 'Update exchange rates for vacancies'
@@ -15,13 +13,23 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         logger.info("Запуск команды обновления курсов валют для вакансий.")
 
-        # Получить курсы валют
+        # Установить exchange_rate_to_rub = 1 для всех вакансий с валютой RUR
+        with transaction.atomic():
+            vacancies_rur = Vacancy.objects.filter(salary_currency='RUR')
+            logger.info(f"Найдено {vacancies_rur.count()} вакансий с валютой RUR.")
+
+            for vacancy in vacancies_rur:
+                vacancy.exchange_rate_to_rub = 1
+                vacancy.save()
+                logger.debug(f"Установлен курс 1 для вакансии ID {vacancy.id} с валютой RUR.")
+
+        # Получить курсы валют для остальных вакансий
         currency_rates = get_all_currency()
 
-        # Начать транзакцию для безопасного обновления
+        # Обновление остальных вакансий
         with transaction.atomic():
             vacancies = Vacancy.objects.exclude(salary_currency__in=['RUR', '']).all()
-            logger.info(f"Найдено {len(vacancies)} вакансий для обновления.")
+            logger.info(f"Найдено {vacancies.count()} вакансий для обновления курсов.")
 
             for vacancy in vacancies:
                 published_date = vacancy.published_at
