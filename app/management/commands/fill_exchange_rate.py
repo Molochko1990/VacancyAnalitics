@@ -13,7 +13,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         logger.info("Запуск команды обновления курсов валют для вакансий.")
 
-        # Установить exchange_rate_to_rub = 1 для всех вакансий с валютой RUR
         with transaction.atomic():
             vacancies_rur = Vacancy.objects.filter(salary_currency='RUR')
             logger.info(f"Найдено {vacancies_rur.count()} вакансий с валютой RUR.")
@@ -23,10 +22,8 @@ class Command(BaseCommand):
                 vacancy.save()
                 logger.debug(f"Установлен курс 1 для вакансии ID {vacancy.id} с валютой RUR.")
 
-        # Получить курсы валют для остальных вакансий
         currency_rates = get_all_currency()
 
-        # Обновление остальных вакансий
         with transaction.atomic():
             vacancies = Vacancy.objects.exclude(salary_currency__in=['RUR', '']).all()
             logger.info(f"Найдено {vacancies.count()} вакансий для обновления курсов.")

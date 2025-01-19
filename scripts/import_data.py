@@ -4,19 +4,17 @@ from datetime import datetime
 import time
 import logging
 
-# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("data_import.log"),  # Лог-файл
-        logging.StreamHandler()                 # Вывод в консоль
+        logging.FileHandler("data_import.log"),
+        logging.StreamHandler()
     ]
 )
 
 logging.info("Starting the data import process.")
 
-# Подключение к базе данных
 connection = psycopg2.connect(
     dbname='vacancies',
     user='postgres',
@@ -27,7 +25,6 @@ connection = psycopg2.connect(
 cursor = connection.cursor()
 logging.info("Connected to the database.")
 
-# Сброс последовательности перед загрузкой данных
 cursor.execute("SELECT pg_get_serial_sequence('vacancies', 'id');")
 sequence_name = cursor.fetchone()[0]
 
@@ -37,31 +34,26 @@ if sequence_name:
 else:
     logging.warning("Sequence for 'id' not found.")
 
-# Путь к CSV-файлу
 csv_file_path = '../data/vacancies_2024.csv'
 
-start_time = time.time()  # Общее время выполнения
+start_time = time.time()
 
-# Максимальное количество строк для загрузки
 MAX_ROWS = 100000
 
-# Открытие CSV-файла
 with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
     reader = list(csv.DictReader(csvfile))
     logging.info(f"Total rows in file: {len(reader)}")
 
     row_count = 0
 
-    # Проходим по строкам с шагом
     for i, row in enumerate(reader):
-        if i % 50 != 0:  # Берём каждую 10-ю строку
+        if i % 50 != 0:
             continue
 
-        # Фильтруем вакансии по дате (только с 2017 года)
         try:
             published_at = datetime.fromisoformat(row['published_at'])
             if published_at.year < 2017:
-                continue  # Пропускаем строки до 2017 года
+                continue
         except ValueError as e:
             logging.warning(f"Error parsing date: {row['published_at']} - {e}")
             continue
@@ -93,7 +85,6 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         if row_count % 1000 == 0:
             logging.info(f"Processed {row_count} rows.")
 
-# Сохранение изменений и закрытие соединения
 connection.commit()
 cursor.close()
 connection.close()
