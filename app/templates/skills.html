@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Навыки{% endblock %}
+
+{% block content %}
+<h2>ТОП-20 навыков за {{ year }} год для профессии "Разработчик игр"</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Навык</th>
+            <th>Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for skill, count in top_skills %}
+        <tr>
+            <td>{{ skill }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -16,10 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('statistics/', views.statistics_view, name='statistics'),
-]
+    path('statistics/', views.statistics_view, name="statistics"),
+    path('demand/', views.demand_view, name='demand'),
+    path('geography/', views.geography_view, name='geography'),
+    path('skills/', views.skills_view, name='skills'),
+    path('last-vacancies/', views.last_vacancies, name='last_vacancies'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
