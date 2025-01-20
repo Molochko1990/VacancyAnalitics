@@ -3,32 +3,34 @@
 {% block title %}Последние вакансии{% endblock %}
 
 {% block content %}
-<h2>Последние вакансии по профессии "Разработчик игр"</h2>
+<div class="otst5">
+    <h2 class="vacancies-header">Последние вакансии по профессии "Разработчик игр"</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Навыки</th>
-            <th>Компания</th>
-            <th>Оклад</th>
-            <th>Регион</th>
-            <th>Дата публикации</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for vacancy in vacancies %}
-        <tr>
-            <td>{{ vacancy.title }}</td>
-            <td>{{ vacancy.description|safe }}</td>
-            <td>{{ vacancy.skills }}</td>
-            <td>{{ vacancy.company }}</td>
-            <td>{{ vacancy.salary }}</td>
-            <td>{{ vacancy.region }}</td>
-            <td>{{ vacancy.published_at }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="vacancies-table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Навыки</th>
+                <th>Компания</th>
+                <th>Оклад</th>
+                <th>Регион</th>
+                <th>Дата публикации</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vacancy in vacancies %}
+            <tr>
+                <td>{{ vacancy.title }}</td>
+                <td>{{ vacancy.description|safe }}</td>
+                <td>{{ vacancy.skills }}</td>
+                <td>{{ vacancy.company }}</td>
+                <td>{{ vacancy.salary }}</td>
+                <td>{{ vacancy.region }}</td>
+                <td>{{ vacancy.published_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

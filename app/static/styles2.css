@@ -1,0 +1,409 @@
+/* Общие стили для страницы */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fdfdfd;
+    margin: 0;
+    padding: 0;
+    width: 1200px;
+}
+
+/* Основные стили контейнера */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.otst {
+    margin-left: 80px;
+    padding: 0;
+}
+
+/* Заголовки */
+h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* Стили для блоков с текстами */
+p.block {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 20px;
+    border-left: 6px solid #4a89e2;
+    transition: all 0.3s ease;
+}
+
+p.block1 {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+p.block:hover {
+    background-color: #eef7fb;
+    transform: scale(1.01);
+}
+
+p.block1:hover {
+    background-color: #eef7fb;
+    transform: scale(1.01);
+}
+
+/* Стили для списка обязанностей */
+ul.block li {
+    background: #eef7fb;
+    border-left: 5px solid #76abe6;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #555;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+ul.block li:hover {
+    background-color: #d4d4f5;
+    transform: scale(1.02);
+}
+
+/* Стили для блока "Образование и карьера" */
+p.block:nth-of-type(1),
+p.block:nth-of-type(2) {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 20px;
+    border-left: 6px solid #4a84e2;
+}
+
+p.block:nth-of-type(1):hover,
+p.block:nth-of-type(2):hover {
+    background-color: #eef7fb;
+    transform: scale(1.01);
+}
+
+/* Стили для блока "Перспективы профессии" */
+p.block:last-of-type {
+    background-color: #eef8f9;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 6px solid #4a7ae2;
+    color: #4a91e2;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+
+
+/* Стили для изображения */
+img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для хедера */
+header {
+    background-color: #4051b0;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    width: 1500px;
+    /* Ширина на всю страницу */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Тень для блока header */
+    transition: all 0.3s ease;
+    /* Плавный переход для всех изменений */
+}
+
+header:hover {
+    background-color: #154776;
+    /* Меняем цвет фона при наведении */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    /* Увеличиваем тень блока */
+}
+
+header h1 {
+    font-size: 2.5rem;
+    /* Размер шрифта */
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    /* Новый шрифт */
+    padding: 20px 0;
+    /* Отступы для заголовка */
+    color: white;
+    /* Белый цвет текста */
+    border-radius: 5px;
+    /* Закругленные углы */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    /* Тень для текста заголовка */
+    transition: all 0.3s ease;
+    /* Плавный переход для изменений текста */
+}
+
+header h1:hover {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+    /* Увеличиваем тень текста при наведении */
+    color: #f0f0f0;
+    /* Меняем цвет текста при наведении */
+}
+
+
+
+/* Стили для футера */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 1rem;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Общий стиль для навигации */
+nav {
+
+    width: 250px;
+    background-color: #ffffff;
+    color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding-top: 110px;
+    font-family: 'Roboto', sans-serif;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 15px 0;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+nav a:hover {
+    background-color: #f0f0f0;
+    color: #1e88e5;
+}
+
+/* Основной контент */
+.container {
+    margin-left: 270px;
+    /* Отступ слева для основного контента */
+    padding: 20px;
+    color: #333;
+}
+
+/* Подвал */
+footer {
+    background-color: #ffffff;
+    color: #555;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    border-top: 1px solid #e0e0e0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer a {
+    color: #1e88e5;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+li {
+    list-style-type: none;
+}
+
+title {
+    font-family: 'Roboto', sans-serif;
+}
+
+
+
+
+
+
+
+
+.stat-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.stat-table th,
+.stat-table td {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.stat-table th {
+    background-color: #4069b0;
+    color: white;
+}
+
+.stat-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.stat-table tr:hover {
+    background-color: #e1e1e1;
+}
+
+/* Контейнер для графиков */
+.chart-container {
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.chart-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Общий стиль для секций */
+.stat-section {
+    margin: 40px 20px;
+    padding: 20px;
+    width: 800px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Контейнер для страницы с отступами */
+.page-container {
+    width: 80%;
+    /* Ширина контейнера 80% от окна */
+    max-width: 1200px;
+    /* Максимальная ширина 1200px */
+    padding: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
+    box-sizing: border-box;
+}
+
+.otst2 {
+    margin-left: 400px;
+
+}
+
+
+
+
+
+/* Основной контейнер для вакансий */
+.vacancies-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок */
+.vacancies-header {
+    font-size: 2.2rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+/* Стили для таблицы вакансий */
+.vacancies-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.vacancies-table th,
+.vacancies-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.vacancies-table th {
+    background-color: #f2f2f2;
+    color: #444;
+    font-weight: bold;
+}
+
+.vacancies-table td {
+    background-color: #fff;
+    color: #555;
+}
+
+/* Эффекты при наведении на строки таблицы */
+.vacancies-table tr:hover {
+    background-color: #f5f5f5;
+    transition: background-color 0.3s ease;
+}
+
+.otst5 {
+    margin-left: 300px;
+}
+
+.vacancies-table td:nth-child(2),
+.vacancies-table th:nth-child(2) {
+    width: 200%;
+}

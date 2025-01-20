@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def get_all_currency():
     logger.info("Начало сбора данных о курсах валют.")
     month = 1
-    year = 2010
+    year = 2016
     all_currency = 'BYR,USD,EUR,KZT,UAH,AZN,KGS,UZS,GEL'.split(',')
     result = {}
 

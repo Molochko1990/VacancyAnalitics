@@ -219,6 +219,6 @@ class VacancyService:
         skill_counter = Counter()
         for skill_set in skills:
             if skill_set:
-                skill_counter.update(skill_set.split(", "))
+                skill_counter.update(skill_set.split("\n"))
 
         return skill_counter.most_common(20)
