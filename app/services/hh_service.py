@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta
 
 BASE_URL = "https://api.hh.ru/vacancies"
-SEARCH_TEXT = "Разработчик"
+SEARCH_TEXT = "Разработчик игр"
 HEADERS = {"User-Agent": "YourDjangoApp/1.0"}
 
 

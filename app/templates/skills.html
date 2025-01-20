@@ -1,25 +1,28 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Навыки{% endblock %}
 
 {% block content %}
-<h2>ТОП-20 навыков за {{ year }} год для профессии "Разработчик игр"</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Навык</th>
-            <th>Количество</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for skill, count in top_skills %}
-        <tr>
-            <td>{{ skill }}</td>
-            <td>{{ count }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="otst2">
+    <section class="stat-section">
+        <h2 class="stat-header">ТОП-20 навыков за {{ year }} год для профессии "Разработчик игр"</h2>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Навык</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill, count in top_skills %}
+                <tr>
+                    <td>{{ skill }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
 
 {% endblock %}

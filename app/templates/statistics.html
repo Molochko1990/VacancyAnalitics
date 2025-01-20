@@ -1,115 +1,127 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Общая статистика{% endblock %}
 
+
 {% block content %}
-<h2>Общая статистика</h2>
+<div class="otst2">
+    <h2 class="section-title ">Общая статистика</h2>
 
-<!-- Таблица "Динамика уровня зарплат по годам" -->
-<h3>Динамика уровня зарплат по годам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Год</th>
-            <th>Средняя зарплата</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in salary_dynamics %}
-        <tr>
-            <td>{{ item.year }}</td>
-            <td>{{ item.avg_salary|floatformat:2 }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<!-- График "Динамика уровня зарплат по годам" -->
-<h3>Динамика уровня зарплат по годам</h3>
-     <img src="{{ salary_chart_path }}" alt="График динамики уровня зарплат">
+    <!-- Таблица "Динамика уровня зарплат по годам" -->
+    <section class="stat-section">
+        <h3 class="stat-header">Динамика уровня зарплат по годам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Год</th>
+                    <th>Средняя зарплата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in salary_dynamics %}
+                <tr>
+                    <td>{{ item.year }}</td>
+                    <td>{{ item.avg_salary|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ salary_chart_path }}" alt="График динамики уровня зарплат">
+        </div>
+    </section>
 
-<!-- Таблица "Динамика количества вакансий по годам" -->
-<h3>Динамика количества вакансий по годам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Год</th>
-            <th>Количество вакансий</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in vacancy_dynamics %}
-        <tr>
-            <td>{{ item.year }}</td>
-            <td>{{ item.count }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Таблица "Динамика количества вакансий по годам" -->
+    <section class="stat-section ">
+        <h3 class="stat-header">Динамика количества вакансий по годам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Год</th>
+                    <th>Количество вакансий</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in vacancy_dynamics %}
+                <tr>
+                    <td>{{ item.year }}</td>
+                    <td>{{ item.count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ vacancy_chart_path }}" alt="График динамики количества вакансий">
+        </div>
+    </section>
 
-<h3>Динамика количества вакансий по годам</h3>
-<img src="{{ vacancy_chart_path }}" alt="График динамики количества вакансий">
+    <!-- Таблица "Уровень зарплат по городам" -->
+    <section class="stat-section">
+        <h3 class="stat-header">Уровень зарплат по городам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Средняя зарплата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in salary_by_city %}
+                <tr>
+                    <td>{{ item.area_name }}</td>
+                    <td>{{ item.avg_salary|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ salary_by_city_chart_path }}" alt="График средней зарплаты по городам">
+        </div>
+    </section>
 
-<!-- Таблица "Уровень зарплат по городам" -->
-<h3>Уровень зарплат по городам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Город</th>
-            <th>Средняя зарплата</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in salary_by_city %}
-        <tr>
-            <td>{{ item.area_name }}</td>
-            <td>{{ item.avg_salary|floatformat:2 }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Таблица "Доля вакансий по городам" -->
+    <section class="stat-section">
+        <h3 class="stat-header">Доля вакансий по городам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Доля (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in vacancy_share_by_city %}
+                <tr>
+                    <td>{{ item.area_name }}</td>
+                    <td>{{ item.share }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ vacancy_share_by_city_chart_path }}" alt="График доли вакансий по городам">
+        </div>
+    </section>
 
-<h3>Средняя зарплата по городам</h3>
-<img src="{{ salary_by_city_chart_path }}" alt="График средней зарплаты по городам">
-
-<!-- Таблица "Доля вакансий по городам" -->
-<h3>Доля вакансий по городам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Город</th>
-            <th>Доля (%)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in vacancy_share_by_city %}
-        <tr>
-            <td>{{ item.area_name }}</td>
-            <td>{{ item.share }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h3>Доля вакансий по городам</h3>
-<img src="{{ vacancy_share_by_city_chart_path }}" alt="График доли вакансий по городам">
-
-<!-- Таблица "ТОП-20 навыков по годам" -->
-<h3>ТОП-20 навыков за {{ year }}</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Навык</th>
-            <th>Количество</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for skill, count in top_skills %}
-        <tr>
-            <td>{{ skill }}</td>
-            <td>{{ count }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+    <!-- Таблица "ТОП-20 навыков по годам" -->
+    <section class="stat-section">
+        <h3 class="stat-header">ТОП-20 навыков за {{ year }}</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Навык</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill, count in top_skills %}
+                <tr>
+                    <td>{{ skill }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
 {% endblock %}

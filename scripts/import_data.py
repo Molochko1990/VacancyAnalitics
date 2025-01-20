@@ -19,7 +19,7 @@ connection = psycopg2.connect(
     dbname='vacancies',
     user='postgres',
     password='masha123',
-    host='localhost',
+    host='db',
     port='5432'
 )
 cursor = connection.cursor()
@@ -34,7 +34,7 @@ if sequence_name:
 else:
     logging.warning("Sequence for 'id' not found.")
 
-csv_file_path = '../data/vacancies_2024.csv'
+csv_file_path = '../data/processed_vacancies.csv'
 
 start_time = time.time()
 
@@ -47,9 +47,6 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
     row_count = 0
 
     for i, row in enumerate(reader):
-        if i % 50 != 0:
-            continue
-
         try:
             published_at = datetime.fromisoformat(row['published_at'])
             if published_at.year < 2017:

@@ -1,46 +1,55 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}География{% endblock %}
 
 {% block content %}
-<h2>География востребованности профессии</h2>
+<div class="otst2">
+    <h2 class="section-title">География востребованности профессии</h2>
 
-<h3>Уровень зарплат по городам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Город</th>
-            <th>Средняя зарплата</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in salary_by_city %}
-        <tr>
-            <td>{{ item.area_name }}</td>
-            <td>{{ item.avg_salary|floatformat:2 }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<img src="{{ salary_by_city_chart_path }}" alt="График средней зарплаты по городам">
+    <section class="stat-section">
+        <h3 class="stat-header">Уровень зарплат по городам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Средняя зарплата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in salary_by_city %}
+                <tr>
+                    <td>{{ item.area_name }}</td>
+                    <td>{{ item.avg_salary|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ salary_by_city_chart_path }}" alt="График средней зарплаты по городам">
+        </div>
+    </section>
 
-<h3>Доля вакансий по городам</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Город</th>
-            <th>Доля (%)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in vacancy_share_by_city %}
-        <tr>
-            <td>{{ item.area_name }}</td>
-            <td>{{ item.share }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<img src="{{ vacancy_share_by_city_chart_path }}" alt="График доли вакансий по городам">
-
+    <section class="stat-section">
+        <h3 class="stat-header">Доля вакансий по городам</h3>
+        <table class="stat-table">
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Доля (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in vacancy_share_by_city %}
+                <tr>
+                    <td>{{ item.area_name }}</td>
+                    <td>{{ item.share }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <img src="{{ vacancy_share_by_city_chart_path }}" alt="График доли вакансий по городам">
+        </div>
+    </section>
+</div>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from .get_all_currency import get_all_currency
+from ._get_all_currency import get_all_currency
 from app.models import Vacancy
 import logging
 
