@@ -1,24 +1,22 @@
 /* Общие стили для страницы */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #fdfdfd;
+    background-color: #f7f7f7;
     margin: 0;
     padding: 0;
-    width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Основные стили контейнера */
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.otst {
-    margin-left: 80px;
-    padding: 0;
-}
 
 /* Заголовки */
 h2 {
@@ -110,11 +108,10 @@ p.block:last-of-type {
     margin-bottom: 20px;
 }
 
-
-
 /* Стили для изображения */
 img {
-    width: 100%;
+    max-width: 90%;
+    /* Установлено ограничение по максимальной ширине */
     height: auto;
     border-radius: 10px;
     margin-top: 30px;
@@ -123,70 +120,58 @@ img {
 
 /* Стили для хедера */
 header {
-    background-color: #4051b0;
+    background-color: #4e38ca;
     color: white;
-    padding: 20px 0;
+
     text-align: center;
     position: relative;
     z-index: 1;
-    width: 1500px;
-    /* Ширина на всю страницу */
+    width: 120%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Тень для блока header */
     transition: all 0.3s ease;
-    /* Плавный переход для всех изменений */
 }
 
 header:hover {
     background-color: #154776;
-    /* Меняем цвет фона при наведении */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    /* Увеличиваем тень блока */
 }
 
 header h1 {
     font-size: 2.5rem;
-    /* Размер шрифта */
     margin: 0;
     font-family: 'Arial', sans-serif;
-    /* Новый шрифт */
     padding: 20px 0;
-    /* Отступы для заголовка */
     color: white;
-    /* Белый цвет текста */
     border-radius: 5px;
-    /* Закругленные углы */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    /* Тень для текста заголовка */
     transition: all 0.3s ease;
-    /* Плавный переход для изменений текста */
 }
 
 header h1:hover {
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-    /* Увеличиваем тень текста при наведении */
     color: #f0f0f0;
-    /* Меняем цвет текста при наведении */
 }
-
-
 
 /* Стили для футера */
 footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 20px;
     font-size: 1rem;
     position: fixed;
     width: 100%;
     bottom: 0;
+    margin-right: 0px;
+    margin-left: 0px;
 }
 
 /* Общий стиль для навигации */
 nav {
-
-    width: 250px;
+    width: 50px;
+    overflow: hidden;
+    transition: width 1s ease;
+    /* Плавное изменение ширины */
+    z-index: 1000;
     background-color: #ffffff;
     color: #333;
     position: fixed;
@@ -197,15 +182,24 @@ nav {
     font-family: 'Roboto', sans-serif;
     border-right: 1px solid #e0e0e0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+
 }
 
 nav ul {
     list-style: none;
     padding: 0;
+    margin-top: 100px;
+    /* Отступ сверху для списка */
+    display: none;
+    /* Скрыть элементы по умолчанию */
 }
 
 nav ul li {
     margin: 15px 0;
+}
+
+nav:hover ul {
+    display: block;
 }
 
 nav a {
@@ -224,10 +218,14 @@ nav a:hover {
     color: #1e88e5;
 }
 
+nav:hover {
+    width: 250px;
+    /* Открывается на 250px */
+}
+
 /* Основной контент */
 .container {
     margin-left: 270px;
-    /* Отступ слева для основного контента */
     padding: 20px;
     color: #333;
 }
@@ -242,7 +240,8 @@ footer {
     border-top: 1px solid #e0e0e0;
     position: relative;
     bottom: 0;
-    width: 100%;
+    width: 120%;
+    z-index: 1;
 }
 
 footer a {
@@ -263,21 +262,15 @@ title {
     font-family: 'Roboto', sans-serif;
 }
 
-
-
-
-
-
-
-
+/* Таблицы для статистики */
 .stat-table {
     width: 100%;
+    /* Обеспечиваем адаптивность таблицы */
     margin: 20px 0;
     border-collapse: collapse;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
 }
 
 .stat-table th,
@@ -286,7 +279,6 @@ title {
     text-align: left;
     font-size: 1.2rem;
     border-bottom: 1px solid #ddd;
-
 }
 
 .stat-table th {
@@ -306,8 +298,9 @@ title {
 .chart-container {
     text-align: center;
     margin-top: 20px;
-    margin-left: 40px;
-    margin-right: 40px;
+    margin-left: 5%;
+    margin-right: 5%;
+    /* Изменение на 5% для гибкости при изменении масштаба */
 }
 
 .chart-container img {
@@ -330,9 +323,7 @@ title {
 /* Контейнер для страницы с отступами */
 .page-container {
     width: 80%;
-    /* Ширина контейнера 80% от окна */
     max-width: 1200px;
-    /* Максимальная ширина 1200px */
     padding: 20px;
     margin-left: 40px;
     margin-right: 40px;
@@ -340,13 +331,9 @@ title {
 }
 
 .otst2 {
-    margin-left: 400px;
-
+    margin-left: 20%;
+    /* Использование процентов для адаптивности */
 }
-
-
-
-
 
 /* Основной контейнер для вакансий */
 .vacancies-container {
@@ -400,10 +387,93 @@ title {
 }
 
 .otst5 {
-    margin-left: 300px;
+    margin-left: 15%;
 }
 
 .vacancies-table td:nth-child(2),
 .vacancies-table th:nth-child(2) {
     width: 200%;
+}
+
+/* Адаптивная верстка с медиазапросами */
+
+/* Медиазапросы для адаптивной верстки */
+@media (max-width: 1024px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .stat-section {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Изменяем макет на мобильных */
+    body {
+        flex-direction: column;
+    }
+
+    /* Навигация */
+    nav {
+        position: absolute;
+        top: 0;
+        left: -250px;
+        width: 20%;
+        z-index: 10;
+        padding-top: 60px;
+    }
+
+    nav a {
+        font-size: 14px;
+    }
+
+    /* При наведении на навигацию показывать */
+    nav:hover {
+        left: 0;
+    }
+
+    /* Уменьшаем размер заголовков */
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Уменьшаем отступы для контейнеров */
+    .container {
+        margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    footer {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    nav a {
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 5px;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    footer {
+        font-size: 10px;
+    }
 }
